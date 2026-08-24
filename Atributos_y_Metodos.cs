@@ -9,7 +9,7 @@ namespace POO_Unidad1
         public string Modelo;
         public int Anio;
         public double VelocidadActual;
-
+        public int Aceleracion;
         public void Acelerar(double inc) { VelocidadActual += inc; }
 
         public void Frenar(double dec)
@@ -24,6 +24,7 @@ namespace POO_Unidad1
             Console.WriteLine($"Modelo: {Modelo}");
             Console.WriteLine($"Anio: {Anio}");
             Console.WriteLine($"Velocidad Actual: {VelocidadActual} km/h");
+            
         }
         }
 
