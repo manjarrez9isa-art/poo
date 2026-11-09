@@ -9,7 +9,7 @@ class HabitacionHotel
     private bool disponible;
     private string clienteActual;
 
-    // Propiedades públicas
+    // Propiedades publicas
     public int Numero
     {
         get { return numero; }
@@ -28,7 +28,8 @@ class HabitacionHotel
             }
             else
             {
-                throw new ArgumentException("Tipo de habitación inválido.");
+                throw new ArgumentException(
+                    "Tipo de habitacion invalido.");
             }
         }
     }
@@ -44,7 +45,8 @@ class HabitacionHotel
             }
             else
             {
-                throw new ArgumentException("El precio debe ser mayor a cero.");
+                throw new ArgumentException(
+                    "El precio debe ser mayor a cero.");
             }
         }
     }
@@ -60,7 +62,10 @@ class HabitacionHotel
     }
 
     // Constructor
-    public HabitacionHotel(int numero, string tipo, double precioPorNoche)
+    public HabitacionHotel(
+        int numero,
+        string tipo,
+        double precioPorNoche)
     {
         this.numero = numero;
         Tipo = tipo;
@@ -69,62 +74,92 @@ class HabitacionHotel
         clienteActual = "";
     }
 
-    // Método Reservar
+    // Metodo Reservar
     public double Reservar(string nombreCliente, int noches)
     {
-        if (disponible && !string.IsNullOrWhiteSpace(nombreCliente)
-            && noches > 0)
+        if (disponible &&
+            !string.IsNullOrWhiteSpace(nombreCliente) &&
+            noches > 0)
         {
             disponible = false;
             clienteActual = nombreCliente;
+
             return precioPorNoche * noches;
         }
 
         return -1;
     }
 
-    // Método Liberar
+    // Metodo Liberar
     public bool Liberar()
     {
         if (!disponible)
         {
             disponible = true;
-            clienteActual = "Fred Rincon";
+            clienteActual = "";
+
             return true;
         }
 
         return false;
     }
 
-    // Método MostrarInfo
+    // Metodo MostrarInfo
     public string MostrarInfo()
     {
-        string estado = disponible ? "Disponible" : "Ocupada";
+        string estado = disponible
+            ? "Disponible"
+            : "Ocupada";
 
         string cliente = disponible
-            ? "Fred Rincon"
+            ? "Ninguno"
             : clienteActual;
 
         return "Habitacion: " + numero +
                "\nTipo: " + tipo +
-               "\nPrecio por noche: $" + precioPorNoche.ToString("N0") +
+               "\nPrecio por noche: $" +
+               precioPorNoche.ToString("N0") +
                "\nEstado: " + estado +
                "\nCliente actual: " + cliente +
                "\n";
     }
 
-    // Método AplicarDescuento
+    // Metodo AplicarDescuento
     public void AplicarDescuento(int porcentaje)
     {
         if (porcentaje >= 0 && porcentaje <= 100)
         {
-            precioPorNoche = precioPorNoche *
-                             (1 - porcentaje / 100.0);
+            double nuevoPrecio = precioPorNoche *
+                                 (1 - porcentaje / 100.0);
+
+            if (nuevoPrecio > 0)
+            {
+                precioPorNoche = nuevoPrecio;
+            }
+            else
+            {
+                Console.WriteLine(
+                    "El precio no puede ser cero o negativo.");
+            }
         }
         else
         {
-            Console.WriteLine("Porcentaje de descuento invalido.");
+            Console.WriteLine(
+                "Porcentaje de descuento invalido.");
         }
+    }
+
+    // Metodo ObtenerDatosResumen
+    public string ObtenerDatosResumen()
+    {
+        string estado = disponible
+            ? "Libre"
+            : "Ocupada por: " + clienteActual;
+
+        return "[" + numero + "] " +
+               tipo + " - $" +
+               precioPorNoche.ToString("N0") +
+               " - " + estado;
     }
 }
 
@@ -142,29 +177,40 @@ class Program
         HabitacionHotel h3 = new HabitacionHotel(
             303, "Suite", 300000);
 
+        // Crear arreglo de habitaciones
+        HabitacionHotel[] habitaciones = { h1, h2, h3 };
+
         // Mostrar estado inicial
-        Console.WriteLine("=== ESTADO INICIAL ===");
+        Console.WriteLine("================================");
+        Console.WriteLine(" HOTEL ANJOY");
+        Console.WriteLine("================================");
+
+        Console.WriteLine("\n=== ESTADO INICIAL ===");
 
         Console.WriteLine(h1.MostrarInfo());
         Console.WriteLine(h2.MostrarInfo());
         Console.WriteLine(h3.MostrarInfo());
 
-        // Reservar habitación 101
+        // Reservas
         Console.WriteLine("=== RESERVAS ===");
 
-        double costo1 = h1.Reservar("Isai Manjarrez", 3);
+        double costo1 = h1.Reservar(
+            "Isai Manjarrez", 3);
 
-        Console.WriteLine("Reserva de Isai Manjarrez: $" +
-                          costo1.ToString("N0"));
+        Console.WriteLine(
+            "Reserva de Isai Manjarrez: $" +
+            costo1.ToString("N0"));
 
-        // Reservar habitación 202
-        double costo2 = h2.Reservar("Kevin Manjarrez", 2);
+        double costo2 = h2.Reservar(
+            "Kevin Manjarrez", 2);
 
-        Console.WriteLine("Reserva de Kevin Manjarrez: $" +
-                          costo2.ToString("N0"));
+        Console.WriteLine(
+            "Reserva de Kevin Manjarrez: $" +
+            costo2.ToString("N0"));
 
-        // Intentar reservar nuevamente la 101
-        double costo3 = h1.Reservar("Frank Rincon", 2);
+        // Intentar reservar una habitacion ocupada
+        double costo3 = h1.Reservar(
+            "Frank Rincon", 2);
 
         if (costo3 == -1)
         {
@@ -172,10 +218,11 @@ class Program
                 "No se pudo reservar la habitacion 101.");
         }
 
-        // Liberar habitación 101
+        // Liberar habitacion 101
         bool liberada = h1.Liberar();
 
-        Console.WriteLine("¿Habitacion 101 liberada? " + liberada);
+        Console.WriteLine(
+            "¿Habitacion 101 liberada? " + liberada);
 
         // Aplicar descuento a la suite
         h3.AplicarDescuento(10);
@@ -184,11 +231,13 @@ class Program
             "Nuevo precio de la suite: $" +
             h3.PrecioPorNoche.ToString("N0"));
 
-        // Reservar nuevamente la 101
-        double costo4 = h1.Reservar("Yeleinis Cahuana", 1);
+        // Reservar nuevamente la habitacion 101
+        double costo4 = h1.Reservar(
+            "Yeleinis Cahuana", 1);
 
-        Console.WriteLine("Yeleinis Cahuana: $" +
-                          costo4.ToString("N0"));
+        Console.WriteLine(
+            "Reserva de Yeleinis Cahuana: $" +
+            costo4.ToString("N0"));
 
         // Mostrar estado final
         Console.WriteLine("\n=== ESTADO FINAL ===");
@@ -197,21 +246,54 @@ class Program
         Console.WriteLine(h2.MostrarInfo());
         Console.WriteLine(h3.MostrarInfo());
 
-        // Contar habitaciones ocupadas
+        // Mostrar resumen de habitaciones
+        Console.WriteLine("\n=== RESUMEN DE HABITACIONES ===");
+
+        foreach (HabitacionHotel habitacion in habitaciones)
+        {
+            Console.WriteLine(
+                habitacion.ObtenerDatosResumen());
+        }
+
+        // Contar habitaciones libres y ocupadas
+        int libres = 0;
         int ocupadas = 0;
 
-        if (!h1.Disponible)
-            ocupadas++;
+        foreach (HabitacionHotel habitacion in habitaciones)
+        {
+            if (habitacion.Disponible)
+            {
+                libres++;
+            }
+            else
+            {
+                ocupadas++;
+            }
+        }
 
-        if (!h2.Disponible)
-            ocupadas++;
-
-        if (!h3.Disponible)
-            ocupadas++;
+        Console.WriteLine("\n=== ESTADISTICAS DEL HOTEL ===");
 
         Console.WriteLine(
-            "Total de habitaciones ocupadas: " + ocupadas);
+            "Habitaciones libres: " + libres);
 
+        Console.WriteLine(
+            "Habitaciones ocupadas: " + ocupadas);
+
+        // Calcular precio promedio
+        double sumaPrecios = 0;
+
+        foreach (HabitacionHotel habitacion in habitaciones)
+        {
+            sumaPrecios += habitacion.PrecioPorNoche;
+        }
+
+        double promedio = sumaPrecios / habitaciones.Length;
+
+        Console.WriteLine(
+            "Precio promedio: $" +
+            promedio.ToString("N0"));
+
+        Console.WriteLine("\nPresione una tecla para salir...");
         Console.ReadKey();
     }
 }
